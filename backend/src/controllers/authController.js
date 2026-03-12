@@ -18,6 +18,7 @@ async function login(req, res) {
   }
 
   try {
+    console.log("Login attempt:", email);
     const [rows] = await pool.execute(
       `SELECT u.*, r.name AS role
        FROM users u

@@ -17,7 +17,7 @@ from typing import List, Dict, Any
 
 import fitz  # PyMuPDF
 from transformers import pipeline
-from services.prioritizer import Prioritizer
+from .prioritizer import Prioritizer
 
 
 logger = logging.getLogger(__name__)

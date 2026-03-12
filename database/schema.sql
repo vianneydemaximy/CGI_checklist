@@ -3,6 +3,10 @@
 -- MySQL compatible (tested with XAMPP 8.x)
 -- ============================================================
 
+-- Init debug
+
+SET FOREIGN_KEY_CHECKS = 0;
+
 CREATE DATABASE IF NOT EXISTS ai_doc_orchestrator
   CHARACTER SET utf8mb4
   COLLATE utf8mb4_unicode_ci;
@@ -203,3 +207,7 @@ INSERT INTO template_items (template_id, title, task_type, priority, sort_order)
   (2, 'Data dictionary / catalog', 'document', 2, 3),
   (2, 'Compliance/GDPR officer contact', 'information', 2, 4),
   (2, 'Data retention policy document', 'document', 3, 5);
+
+  -- Fin debug
+
+  SET FOREIGN_KEY_CHECKS = 1;
