@@ -1,0 +1,22 @@
+# AI Service dependencies
+# Python 3.10+
+
+fastapi==0.109.0
+uvicorn[standard]==0.27.0
+python-multipart==0.0.6
+pydantic==2.5.3
+
+# PDF handling
+PyMuPDF==1.23.8          # fitz — lightweight, no heavy deps
+
+# NLP — lightweight models from HuggingFace
+transformers==4.37.0
+torch==2.1.2             # CPU-only build is fine for V1
+sentencepiece==0.1.99
+accelerate==0.26.1
+
+# HTTP client (for health checks, etc.)
+httpx==0.26.0
+
+# Utilities
+python-dotenv==1.0.0

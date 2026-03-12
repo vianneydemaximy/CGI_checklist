@@ -1,0 +1,218 @@
+/* global.css — CGI Document Orchestrator
+   Design: Industrial-utilitarian with warm accents.
+   Typography: DM Sans (body) + Space Mono (labels/code)
+*/
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:        #0f0f10;
+  --bg-card:   #18181b;
+  --bg-hover:  #222226;
+  --border:    #2e2e33;
+  --border-light: #3a3a40;
+
+  --text:      #e8e8ea;
+  --text-dim:  #8888a0;
+  --text-faint:#55555f;
+
+  --accent:    #e8652a;       /* CGI-orange */
+  --accent-dim:#8c3d19;
+  --accent-glow: rgba(232,101,42,0.15);
+
+  --green:     #34d399;
+  --green-dim: #064e35;
+  --yellow:    #fbbf24;
+  --yellow-dim:#78350f;
+  --red:       #f87171;
+  --red-dim:   #7f1d1d;
+  --blue:      #60a5fa;
+  --blue-dim:  #1e3a5f;
+
+  --radius:    6px;
+  --radius-lg: 12px;
+  --font:      'DM Sans', sans-serif;
+  --font-mono: 'Space Mono', monospace;
+  --shadow:    0 4px 24px rgba(0,0,0,0.4);
+  --transition: 0.15s ease;
+}
+
+html { font-size: 15px; }
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* ── Typography ─────────────────────────────────────────────── */
+h1 { font-size: 1.8rem; font-weight: 600; letter-spacing: -0.02em; }
+h2 { font-size: 1.4rem; font-weight: 600; letter-spacing: -0.01em; }
+h3 { font-size: 1.1rem; font-weight: 500; }
+p  { color: var(--text-dim); }
+
+/* ── Layout ─────────────────────────────────────────────────── */
+.layout { display: flex; min-height: 100vh; }
+.main-content { flex: 1; padding: 2rem; max-width: 1200px; margin: 0 auto; width: 100%; }
+
+/* ── Cards ──────────────────────────────────────────────────── */
+.card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 1.5rem;
+}
+.card:hover { border-color: var(--border-light); }
+
+/* ── Buttons ────────────────────────────────────────────────── */
+.btn {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  padding: 0.55rem 1.1rem;
+  border: none; border-radius: var(--radius);
+  font-family: var(--font); font-size: 0.88rem; font-weight: 500;
+  cursor: pointer; transition: var(--transition);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+}
+.btn-primary:hover:not(:disabled) { background: #d45518; }
+
+.btn-ghost {
+  background: transparent;
+  border: 1px solid var(--border-light);
+  color: var(--text-dim);
+}
+.btn-ghost:hover:not(:disabled) { background: var(--bg-hover); color: var(--text); }
+
+.btn-danger {
+  background: var(--red-dim);
+  color: var(--red);
+  border: 1px solid var(--red-dim);
+}
+.btn-danger:hover:not(:disabled) { background: #a02020; }
+
+.btn-sm { padding: 0.35rem 0.75rem; font-size: 0.8rem; }
+.btn-icon { padding: 0.4rem; border-radius: var(--radius); background: transparent; border: none; cursor: pointer; color: var(--text-dim); transition: var(--transition); }
+.btn-icon:hover { color: var(--text); background: var(--bg-hover); }
+
+/* ── Form inputs ─────────────────────────────────────────────── */
+input, textarea, select {
+  width: 100%; padding: 0.6rem 0.8rem;
+  background: var(--bg); border: 1px solid var(--border-light);
+  border-radius: var(--radius); color: var(--text);
+  font-family: var(--font); font-size: 0.9rem;
+  transition: var(--transition);
+  outline: none;
+}
+input:focus, textarea:focus, select:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+label { display: block; margin-bottom: 0.35rem; font-size: 0.82rem; color: var(--text-dim); font-weight: 500; }
+.form-group { margin-bottom: 1rem; }
+
+/* ── Badges ─────────────────────────────────────────────────── */
+.badge {
+  display: inline-flex; align-items: center; gap: 0.3rem;
+  padding: 0.2rem 0.55rem; border-radius: 999px;
+  font-size: 0.75rem; font-weight: 600; font-family: var(--font-mono);
+  text-transform: uppercase; letter-spacing: 0.04em;
+}
+.badge-green  { background: var(--green-dim);  color: var(--green); }
+.badge-yellow { background: var(--yellow-dim); color: var(--yellow); }
+.badge-red    { background: var(--red-dim);    color: var(--red); }
+.badge-blue   { background: var(--blue-dim);   color: var(--blue); }
+.badge-gray   { background: #222; color: var(--text-dim); }
+
+/* ── Progress bar ───────────────────────────────────────────── */
+.progress-bar {
+  height: 6px; background: var(--border); border-radius: 999px; overflow: hidden;
+}
+.progress-bar-fill {
+  height: 100%; background: var(--accent);
+  border-radius: 999px; transition: width 0.4s ease;
+}
+.progress-bar-fill.green { background: var(--green); }
+
+/* ── Table ──────────────────────────────────────────────────── */
+.table { width: 100%; border-collapse: collapse; font-size: 0.88rem; }
+.table th {
+  text-align: left; padding: 0.65rem 1rem;
+  font-size: 0.75rem; font-family: var(--font-mono);
+  text-transform: uppercase; letter-spacing: 0.06em;
+  color: var(--text-faint); border-bottom: 1px solid var(--border);
+}
+.table td { padding: 0.75rem 1rem; border-bottom: 1px solid var(--border); vertical-align: middle; }
+.table tr:last-child td { border-bottom: none; }
+.table tr:hover td { background: var(--bg-hover); }
+
+/* ── Checkbox ───────────────────────────────────────────────── */
+input[type="checkbox"] {
+  width: 1rem; height: 1rem; accent-color: var(--accent);
+  cursor: pointer;
+}
+
+/* ── Modal ──────────────────────────────────────────────────── */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 1000; padding: 1rem;
+  animation: fadeIn 0.15s ease;
+}
+.modal {
+  background: var(--bg-card); border: 1px solid var(--border-light);
+  border-radius: var(--radius-lg); padding: 2rem;
+  width: 100%; max-width: 680px; max-height: 90vh; overflow-y: auto;
+  box-shadow: var(--shadow);
+  animation: slideUp 0.2s ease;
+}
+.modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; }
+.modal-footer { display: flex; justify-content: flex-end; gap: 0.75rem; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border); }
+
+@keyframes fadeIn  { from { opacity: 0; } to { opacity: 1; } }
+@keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+/* ── Alerts ─────────────────────────────────────────────────── */
+.alert { padding: 0.8rem 1rem; border-radius: var(--radius); font-size: 0.88rem; margin-bottom: 1rem; }
+.alert-error   { background: var(--red-dim);    color: var(--red);    border: 1px solid #7f1d1d; }
+.alert-success { background: var(--green-dim);  color: var(--green);  border: 1px solid #064e35; }
+.alert-info    { background: var(--blue-dim);   color: var(--blue);   border: 1px solid #1e3a5f; }
+.alert-warn    { background: var(--yellow-dim); color: var(--yellow); border: 1px solid #78350f; }
+
+/* ── Loader spinner ─────────────────────────────────────────── */
+.spinner {
+  display: inline-block; width: 1.2rem; height: 1.2rem;
+  border: 2px solid var(--border); border-top-color: var(--accent);
+  border-radius: 50%; animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── Divider ─────────────────────────────────────────────────── */
+.divider { height: 1px; background: var(--border); margin: 1.5rem 0; }
+
+/* ── Mono label ─────────────────────────────────────────────── */
+.mono { font-family: var(--font-mono); font-size: 0.78rem; color: var(--text-dim); }
+
+/* ── Flex utilities ─────────────────────────────────────────── */
+.flex  { display: flex; }
+.flex-center { display: flex; align-items: center; }
+.flex-between { display: flex; align-items: center; justify-content: space-between; }
+.gap-1 { gap: 0.5rem; }
+.gap-2 { gap: 1rem; }
+.gap-3 { gap: 1.5rem; }
+.mt-1  { margin-top: 0.5rem; }
+.mt-2  { margin-top: 1rem; }
+.mt-3  { margin-top: 1.5rem; }
+.mb-2  { margin-bottom: 1rem; }
+
+/* ── Scrollbar ──────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border-light); border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-faint); }
