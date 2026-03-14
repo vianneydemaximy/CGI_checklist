@@ -70,7 +70,7 @@ root/
 │   ├── tests/
 │   │   └── api.test.js
 │   ├── package.json
-│   └── .env.example
+│   └── .env
 │
 ├── frontend/
 │   ├── src/
@@ -100,7 +100,7 @@ root/
 │   ├── tests/
 │   │   └── test_ai.py
 │   ├── requirements.txt
-│   └── .env.example
+│   └── .env
 │
 ├── database/
 │   └── schema.sql                    # Full MySQL schema + seed data
@@ -123,6 +123,10 @@ root/
 
 ## Setup & Installation
 
+
+### 1. Fichier .env
+Create a .env file at the root of backend and ai-service and fill it with your informations (email, db password, etc...)
+
 ### 1. Database
 
 Start MySQL (XAMPP or standalone), then run:
@@ -139,9 +143,7 @@ cd backend
 # Install dependencies
 npm install
 
-# Copy and fill environment variables
-cp .env.example .env
-# Edit .env — fill DB credentials and SMTP settings
+
 
 # Create hashed user accounts
 npm run seed
@@ -163,8 +165,7 @@ source venv/bin/activate     # Windows: venv\Scripts\activate
 # Install dependencies
 pip install -r requirements.txt
 
-# Copy env
-cp .env.example .env
+
 
 # Start service
 python main.py
