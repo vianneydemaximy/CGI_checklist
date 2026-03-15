@@ -1,6 +1,6 @@
 /**
- * components/Navbar.jsx
- * Left sidebar — visible only to authenticated consultants / admins.
+ * components/Navbar.jsx — V2
+ * Lien /templates rendu actif (route ajoutée dans App.jsx).
  */
 import React from 'react'
 import { NavLink, useNavigate } from 'react-router-dom'
@@ -22,31 +22,38 @@ const S = {
   link: (active) => ({
     display: 'flex', alignItems: 'center', gap: '0.6rem',
     padding: '0.55rem 1.25rem', fontSize: '0.88rem',
-    color: active ? '#e8652a' : '#8888a0',
+    color:      active ? '#e8652a' : '#8888a0',
     background: active ? 'rgba(232,101,42,0.1)' : 'transparent',
     textDecoration: 'none',
     borderRight: active ? '2px solid #e8652a' : '2px solid transparent',
     transition: '0.15s ease', fontWeight: active ? 500 : 400,
   }),
   sectionLabel: {
-    padding: '0.4rem 1.25rem', marginTop: '1rem',
+    padding: '0.4rem 1.25rem', marginTop: '0.5rem',
     fontSize: '0.68rem', color: '#55555f',
     fontFamily: "'Space Mono', monospace",
     textTransform: 'uppercase', letterSpacing: '0.08em',
   },
-  bottom: { marginTop: 'auto', padding: '1rem 1.25rem', borderTop: '1px solid #2e2e33' },
-  userEmail: { fontSize: '0.78rem', color: '#8888a0', display: 'block', marginBottom: 6, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' },
+  bottom: {
+    marginTop: 'auto', padding: '1rem 1.25rem',
+    borderTop: '1px solid #2e2e33',
+  },
+  userName: {
+    fontSize: '0.82rem', color: '#e8e8ea', fontWeight: 500,
+    display: 'block', marginBottom: 4,
+    overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+  },
   roleBadge: {
-    display: 'inline-block', padding: '0.15rem 0.4rem',
+    display: 'inline-block', padding: '0.15rem 0.45rem',
     background: '#222', borderRadius: 4,
     fontSize: '0.7rem', fontFamily: "'Space Mono', monospace", color: '#e8652a',
     marginBottom: 8,
   },
 }
 
-function NavItem({ to, icon, label }) {
+function NavItem({ to, icon, label, end = false }) {
   return (
-    <NavLink to={to} style={({ isActive }) => S.link(isActive)}>
+    <NavLink to={to} end={end} style={({ isActive }) => S.link(isActive)}>
       <span>{icon}</span>
       <span>{label}</span>
     </NavLink>
@@ -59,20 +66,17 @@ export default function Navbar() {
 
   return (
     <nav style={S.sidebar}>
-      {/* Brand */}
       <div style={S.logo}>
         <div style={S.logoText}>⬡ CGI Orchestrator</div>
         <div style={S.logoSub}>Document Management</div>
       </div>
 
-      {/* Navigation links */}
       <div style={S.sectionLabel}>Workspace</div>
-      <NavItem to="/"          icon="▦" label="Dashboard" />
-      <NavItem to="/templates" icon="◫" label="Templates" />
+      <NavItem to="/"          end  icon="▦" label="Dashboard"  />
+      <NavItem to="/templates"      icon="◫" label="Templates"  />
 
-      {/* User info + logout */}
       <div style={S.bottom}>
-        <span style={S.userEmail}>{user?.name}</span>
+        <span style={S.userName}>{user?.name}</span>
         <span style={S.roleBadge}>{user?.role}</span>
         <button
           onClick={() => { logout(); navigate('/login') }}

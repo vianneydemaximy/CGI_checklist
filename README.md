@@ -195,7 +195,6 @@ npm run dev
 |------------------------|-------------|------------|
 | admin@cgi.com          | Admin123!   | admin      |
 | alice@cgi.com          | Consult123! | consultant |
-| bob@clientcompany.com  | Client123!  | client     |
 
 ⚠️ Change all passwords before any production use.
 

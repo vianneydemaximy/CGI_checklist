@@ -1,7 +1,6 @@
 /**
  * context/AuthContext.jsx
- * Provides authentication state for the app.
- * Only consultant and admin roles are active.
+ * isConsultant restauré pour compatibilité avec ChecklistView (toujours true).
  */
 import React, { createContext, useContext, useState, useEffect } from 'react'
 import api from '../services/api'
@@ -12,7 +11,6 @@ export function AuthProvider({ children }) {
   const [user, setUser]       = useState(null)
   const [loading, setLoading] = useState(true)
 
-  // Restore session from localStorage on first render
   useEffect(() => {
     const token = localStorage.getItem('token')
     if (token) {
@@ -41,11 +39,11 @@ export function AuthProvider({ children }) {
     setUser(null)
   }
 
-  // Convenience helper — true for consultant and admin
-  const isAdmin = user?.role === 'admin'
+  const isConsultant = !!user           // toujours true si connecté
+  const isAdmin      = user?.role === 'admin'
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout, isAdmin }}>
+    <AuthContext.Provider value={{ user, loading, login, logout, isConsultant, isAdmin }}>
       {children}
     </AuthContext.Provider>
   )
