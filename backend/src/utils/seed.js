@@ -1,47 +1,57 @@
-/**
- * utils/seed.js
- * Creates default consultant and admin users with hashed passwords.
- * Run: node src/utils/seed.js
- */
-require('dotenv').config({ path: require('path').join(__dirname, '../../.env') });
-const bcrypt   = require('bcryptjs');
-const { pool } = require('../config/db');
-
-const USERS = [
-  { role: 'admin',      name: 'Admin',           email: 'admin@cgi.com',  password: 'Admin123!'   },
-  { role: 'consultant', name: 'Alice Consultant', email: 'alice@cgi.com',  password: 'Consult123!' },
-];
+const pool = require("../config/db");
 
 async function seed() {
-  console.log('🌱 Seeding users...');
-  for (const u of USERS) {
-    const hash = await bcrypt.hash(u.password, 10);
 
-    const [roleRows] = await pool.execute(`SELECT id FROM roles WHERE name = ?`, [u.role]);
-    if (roleRows.length === 0) {
-      console.error(`  ❌ Role "${u.role}" not found in DB — did you run schema.sql first?`);
-      continue;
-    }
-    const roleId = roleRows[0].id;
+console.log("Seeding database...");
 
-    const [existing] = await pool.execute(`SELECT id FROM users WHERE email = ?`, [u.email]);
-    if (existing.length > 0) {
-      await pool.execute(
-        `UPDATE users SET password_hash = ?, role_id = ?, name = ? WHERE email = ?`,
-        [hash, roleId, u.name, u.email]
-      );
-      console.log(`  ✏️  Updated: ${u.email}`);
-    } else {
-      await pool.execute(
-        `INSERT INTO users (role_id, name, email, password_hash) VALUES (?, ?, ?, ?)`,
-        [roleId, u.name, u.email, hash]
-      );
-      console.log(`  ✅ Created: ${u.email}  (password: ${u.password})`);
-    }
-  }
+await pool.query(`
+INSERT INTO roles (id,name) VALUES
+(1,'admin'),
+(2,'consultant'),
+(3,'client')
+`);
 
-  console.log('\n✅ Seed complete. You can now log in with the credentials above.');
-  process.exit(0);
+await pool.query(`
+INSERT INTO users (id,role_id,name,email,password_hash)
+VALUES
+(1,1,'Admin','admin@cgi.com','$2b$10$2jgNnXJ1e7itJQHCVmAHDuksW.F/A0TTpga5NzK3q.X8BylZQrx/2'),
+(2,2,'Alice Consultant','alice@cgi.com','$2a$10$uWjGgeAD0pLk80TwD1ba5eqjexxH2lPPHU15ERpzuydEBPNCvXtNi')
+`);
+
+await pool.query(`
+INSERT INTO templates (name,description,is_global,created_by,language)
+VALUES
+('Data Project','Documents for data engineering missions',1,1,'en'),
+('Projet Data','Template mission data',1,1,'fr')
+`);
+
+await pool.query(`
+INSERT INTO template_items (template_id,title,task_type,priority,sort_order)
+VALUES
+(1,'Data access agreement','document',1,0),
+(1,'Database connection credentials','access',1,1),
+(1,'Data dictionary / catalog','document',2,2),
+(1,'Compliance/GDPR officer contact','information',2,3),
+(1,'Data retention policy document','document',3,4)
+`);
+
+await pool.query(`
+INSERT INTO email_templates
+(name,description,subject,body,is_global,created_by,language)
+VALUES
+(
+'Standard document request',
+'Email to request documents',
+'[CGI Mission Preparation] Document Request',
+'Dear {{recipient_name}},\\n\\n{{task_list}}\\n\\nBest regards,\\n{{consultant_name}}',
+1,
+1,
+'en'
+)
+`);
+
+console.log("Seed complete");
+process.exit();
 }
 
-seed().catch(err => { console.error(err); process.exit(1); });
+seed();

@@ -22,8 +22,8 @@ const TYPE_COLORS  = { document:'#60a5fa', access:'#fbbf24', authorization:'#a78
 const PLACEHOLDERS = '{{recipient_name}}  {{task_list}}  {{consultant_name}}  {{deadline}}'
 
 const EMPTY_CHECKLIST_ITEM = { title:'', description:'', task_type:'document', priority:5 }
-const EMPTY_CHECKLIST_TPL  = { name:'', description:'', is_global:false, items:[] }
-const EMPTY_EMAIL_TPL      = { name:'', description:'', subject:'', body:'', is_global:false }
+const EMPTY_CHECKLIST_TPL  = { name:'', description:'', is_global:false, language:'en', items:[] }
+const EMPTY_EMAIL_TPL      = { name:'', description:'', subject:'', body:'', is_global:false, language:'en' }
 
 /* ── Petit badge ─────────────────────────────────────────────── */
 function Badge({ global: isGlobal }) {
@@ -133,7 +133,10 @@ function ChecklistTemplates({ isAdmin, userId }) {
           {templates.map(tpl => (
             <div key={tpl.id} className="card" style={{ position:'relative' }}>
               <div className="flex-between" style={{ marginBottom:'0.5rem' }}>
-                <Badge global={!!tpl.is_global} />
+                <div style={{ display:'flex', gap:'0.4rem' }}>
+                  <Badge global={!!tpl.is_global} />
+                  <span style={{ fontSize:'0.72rem' }}>{tpl.language === 'fr' ? '🇫🇷' : '🇬🇧'}</span>
+                </div>
                 <span className="mono">{tpl.item_count || 0} items</span>
               </div>
               <h3 style={{ color:'#e8e8ea', marginBottom:'0.3rem' }}>{tpl.name}</h3>
@@ -204,6 +207,20 @@ function ChecklistTemplates({ isAdmin, userId }) {
             <div className="form-group">
               <label>Description</label>
               <input value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} placeholder="Short description…" />
+            </div>
+            <div className="form-group">
+              <label>Language</label>
+              <div style={{ display:'flex', gap:'0.5rem' }}>
+                {[['en','🇬🇧 English'],['fr','🇫🇷 Français']].map(([k,v]) => (
+                  <button key={k} type="button" onClick={() => setForm(f => ({ ...f, language: k }))} style={{
+                    flex:1, padding:'0.5rem', borderRadius:6, cursor:'pointer',
+                    border:     form.language === k ? '1px solid #e8652a' : '1px solid #2e2e33',
+                    background: form.language === k ? 'rgba(232,101,42,0.1)' : '#18181b',
+                    color:      form.language === k ? '#e8652a' : '#8888a0',
+                    fontSize:'0.82rem',
+                  }}>{v}</button>
+                ))}
+              </div>
             </div>
             {isAdmin && (
               <div className="form-group" style={{ display:'flex', alignItems:'center', gap:'0.75rem' }}>
@@ -353,7 +370,10 @@ function EmailTemplates({ isAdmin, userId }) {
           {templates.map(tpl => (
             <div key={tpl.id} className="card">
               <div className="flex-between" style={{ marginBottom:'0.5rem' }}>
-                <Badge global={!!tpl.is_global} />
+                <div style={{ display:'flex', gap:'0.4rem' }}>
+                  <Badge global={!!tpl.is_global} />
+                  <span style={{ fontSize:'0.72rem' }}>{tpl.language === 'fr' ? '🇫🇷' : '🇬🇧'}</span>
+                </div>
                 <span style={{ fontSize:'0.72rem', color:'#55555f' }}>{tpl.created_by_name}</span>
               </div>
               <h3 style={{ color:'#e8e8ea', marginBottom:'0.25rem' }}>{tpl.name}</h3>

@@ -1,8 +1,9 @@
 /**
- * pages/Dashboard.jsx — V2
- * - Sélection d'un template checklist à la création de projet
- * - Création automatique de la checklist + navigation directe
- * - Plus d'alerte "no checklist" — le projet s'ouvre toujours
+ * pages/Dashboard.jsx — V3
+ * - Sélecteur de langue à la création de projet
+ * - Filtre les templates par langue
+ * - Auto-navigation vers la checklist créée
+ * - ORDER BY checklists (fix tâches perdues)
  */
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -14,6 +15,7 @@ const STATUS_BADGE = {
   completed: 'badge-blue',
   archived:  'badge-gray',
 }
+const LANG_LABELS = { en: '🇬🇧 English', fr: '🇫🇷 Français' }
 
 function CompletionBar({ completed, total }) {
   const pct = total > 0 ? Math.round((completed / total) * 100) : 0
@@ -33,24 +35,22 @@ function CompletionBar({ completed, total }) {
 export default function Dashboard() {
   const navigate = useNavigate()
 
-  const [projects, setProjects]   = useState([])
+  const [projects,  setProjects]  = useState([])
   const [templates, setTemplates] = useState([])
-  const [loading, setLoading]     = useState(true)
-  const [error, setError]         = useState('')
+  const [loading,   setLoading]   = useState(true)
+  const [error,     setError]     = useState('')
 
-  // Formulaire nouveau projet
-  const [showNew, setShowNew]               = useState(false)
-  const [newName, setNewName]               = useState('')
-  const [newDesc, setNewDesc]               = useState('')
+  /* Form nouveau projet */
+  const [showNew,          setShowNew]          = useState(false)
+  const [newName,          setNewName]          = useState('')
+  const [newDesc,          setNewDesc]          = useState('')
+  const [newLang,          setNewLang]          = useState('en')
   const [selectedTemplate, setSelectedTemplate] = useState('')
-  const [creating, setCreating]             = useState(false)
+  const [creating,         setCreating]         = useState(false)
 
   useEffect(() => {
     loadProjects()
-    // Charger les templates pour le sélecteur à la création
-    api.get('/templates')
-      .then(r => setTemplates(r.data))
-      .catch(() => {})
+    api.get('/templates').then(r => setTemplates(r.data)).catch(() => {})
   }, [])
 
   async function loadProjects() {
@@ -80,54 +80,51 @@ export default function Dashboard() {
     }
   }
 
-  /**
-   * Création du projet + checklist associée en une seule action.
-   * Si un template est sélectionné, les items sont clonés automatiquement.
-   * Navigation directe vers la checklist créée.
-   */
+  /* Filtrer les templates selon la langue sélectionnée */
+  const filteredTemplates = templates.filter(t => t.language === newLang || !t.language)
+
+  /* Réinitialiser le template sélectionné quand la langue change */
+  function handleLangChange(lang) {
+    setNewLang(lang)
+    setSelectedTemplate('')
+  }
+
   async function createProject(e) {
     e.preventDefault()
     if (!newName.trim()) return
-    setCreating(true)
-    setError('')
+    setCreating(true); setError('')
     try {
-      // 1. Créer le projet
-      const projRes = await api.post('/projects', { name: newName, description: newDesc })
+      /* 1. Créer le projet avec la langue */
+      const projRes = await api.post('/projects', {
+        name: newName, description: newDesc, language: newLang,
+      })
       const projectId = projRes.data.id
 
-      // 2. Créer la checklist (avec ou sans template)
+      /* 2. Créer la checklist (avec template si sélectionné) */
       const clRes = await api.post(`/projects/${projectId}/checklists`, {
         title:       newName,
         source:      selectedTemplate ? 'template' : 'manual',
         template_id: selectedTemplate ? parseInt(selectedTemplate, 10) : undefined,
       })
-      const checklistId = clRes.data.id
 
-      // 3. Réinitialiser et naviguer directement
+      /* 3. Navigation directe */
       setShowNew(false)
-      setNewName('')
-      setNewDesc('')
-      setSelectedTemplate('')
-      navigate(`/projects/${projectId}/checklists/${checklistId}`)
+      setNewName(''); setNewDesc(''); setNewLang('en'); setSelectedTemplate('')
+      navigate(`/projects/${projectId}/checklists/${clRes.data.id}`)
     } catch (err) {
       setError(err.message)
       setCreating(false)
     }
   }
 
-  /**
-   * Ouvre la première checklist d'un projet.
-   * Propose la création si aucune checklist n'existe encore.
-   */
   async function openProject(project) {
     if (project.checklists?.length > 0) {
       navigate(`/projects/${project.id}/checklists/${project.checklists[0].id}`)
     } else {
-      // Créer une checklist vide à la volée
+      /* Créer une checklist vide à la volée si le projet n'en a pas */
       try {
         const clRes = await api.post(`/projects/${project.id}/checklists`, {
-          title:  project.name,
-          source: 'manual',
+          title: project.name, source: 'manual',
         })
         navigate(`/projects/${project.id}/checklists/${clRes.data.id}`)
       } catch (err) {
@@ -148,18 +145,14 @@ export default function Dashboard() {
       <div className="flex-between mb-2">
         <div>
           <h1>Projects</h1>
-          <p style={{ marginTop:4 }}>
-            {projects.length} mission{projects.length !== 1 ? 's' : ''}
-          </p>
+          <p style={{ marginTop:4 }}>{projects.length} mission{projects.length !== 1 ? 's' : ''}</p>
         </div>
-        <button className="btn btn-primary" onClick={() => setShowNew(true)}>
-          + New Project
-        </button>
+        <button className="btn btn-primary" onClick={() => setShowNew(true)}>+ New Project</button>
       </div>
 
       {error && <div className="alert alert-error">{error}</div>}
 
-      {/* ── Modal nouveau projet ──────────────────────────── */}
+      {/* ── Modal nouveau projet ── */}
       {showNew && (
         <div className="modal-overlay" onClick={() => setShowNew(false)}>
           <div className="modal" onClick={e => e.stopPropagation()}>
@@ -171,53 +164,64 @@ export default function Dashboard() {
             <form onSubmit={createProject}>
               <div className="form-group">
                 <label>Project name *</label>
-                <input
-                  autoFocus required
-                  value={newName} onChange={e => setNewName(e.target.value)}
-                  placeholder="e.g. Société Générale — Data Platform"
-                />
+                <input autoFocus required value={newName}
+                  onChange={e => setNewName(e.target.value)}
+                  placeholder="e.g. Société Générale — Data Platform" />
               </div>
 
               <div className="form-group">
                 <label>Description (optional)</label>
-                <textarea
-                  rows={3} value={newDesc}
+                <textarea rows={3} value={newDesc}
                   onChange={e => setNewDesc(e.target.value)}
-                  placeholder="Brief mission description…"
-                  style={{ resize:'vertical' }}
-                />
+                  placeholder="Brief mission description…" style={{ resize:'vertical' }} />
               </div>
 
-              {/* Sélecteur de template */}
+              {/* Sélecteur de langue */}
+              <div className="form-group">
+                <label>Language</label>
+                <div style={{ display:'flex', gap:'0.5rem' }}>
+                  {Object.entries(LANG_LABELS).map(([k, v]) => (
+                    <button key={k} type="button" onClick={() => handleLangChange(k)} style={{
+                      flex:1, padding:'0.55rem', borderRadius:6, cursor:'pointer',
+                      border:     newLang === k ? '1px solid #e8652a' : '1px solid #2e2e33',
+                      background: newLang === k ? 'rgba(232,101,42,0.1)' : '#18181b',
+                      color:      newLang === k ? '#e8652a' : '#8888a0',
+                      fontSize:'0.88rem', fontWeight: newLang === k ? 500 : 400,
+                    }}>
+                      {v}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Sélecteur de template checklist (filtré par langue) */}
               <div className="form-group">
                 <label>Checklist template</label>
-                <select
-                  value={selectedTemplate}
-                  onChange={e => setSelectedTemplate(e.target.value)}
-                >
+                <select value={selectedTemplate} onChange={e => setSelectedTemplate(e.target.value)}>
                   <option value="">— Empty checklist —</option>
-                  {templates.map(t => (
+                  {filteredTemplates.map(t => (
                     <option key={t.id} value={t.id}>
                       {t.is_global ? '🌐 ' : '👤 '}{t.name}
                       {t.item_count ? ` (${t.item_count} items)` : ''}
                     </option>
                   ))}
                 </select>
+                {filteredTemplates.length === 0 && (
+                  <p style={{ fontSize:'0.78rem', color:'#8888a0', marginTop:4 }}>
+                    No templates available in {LANG_LABELS[newLang]}. Run migration_v3.sql or create templates in the Templates page.
+                  </p>
+                )}
                 {selectedTemplate && (
                   <p style={{ fontSize:'0.78rem', color:'#8888a0', marginTop:4 }}>
-                    Template items will be added to the checklist. You can edit them after creation.
+                    Template items will be pre-filled. You can edit them after creation.
                   </p>
                 )}
               </div>
 
               <div className="modal-footer">
-                <button type="button" className="btn btn-ghost" onClick={() => setShowNew(false)}>
-                  Cancel
-                </button>
+                <button type="button" className="btn btn-ghost" onClick={() => setShowNew(false)}>Cancel</button>
                 <button type="submit" className="btn btn-primary" disabled={creating}>
-                  {creating
-                    ? <><span className="spinner" /> Creating…</>
-                    : 'Create & Open →'}
+                  {creating ? <><span className="spinner" /> Creating…</> : 'Create & Open →'}
                 </button>
               </div>
             </form>
@@ -225,31 +229,29 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* ── État vide ─────────────────────────────────────── */}
+      {/* ── État vide ── */}
       {projects.length === 0 ? (
         <div className="card" style={{ textAlign:'center', padding:'3rem', color:'#8888a0' }}>
           <div style={{ fontSize:'2.5rem', marginBottom:'0.75rem' }}>◫</div>
           <p>No projects yet. Click <strong>+ New Project</strong> to get started.</p>
         </div>
       ) : (
-        /* ── Grille de projets ────────────────────────────── */
-        <div style={{
-          display:'grid',
-          gridTemplateColumns:'repeat(auto-fill, minmax(320px, 1fr))',
-          gap:'1rem',
-        }}>
+        <div style={{ display:'grid', gridTemplateColumns:'repeat(auto-fill, minmax(320px, 1fr))', gap:'1rem' }}>
           {projects.map(project => (
-            <div
-              key={project.id}
-              className="card"
-              style={{ cursor:'pointer' }}
-              onClick={() => openProject(project)}
-            >
-              {/* Statut + ID */}
+            <div key={project.id} className="card" style={{ cursor:'pointer' }}
+              onClick={() => openProject(project)}>
+
               <div className="flex-between" style={{ marginBottom:'0.75rem' }}>
-                <span className={`badge ${STATUS_BADGE[project.status] || 'badge-gray'}`}>
-                  {project.status}
-                </span>
+                <div style={{ display:'flex', gap:'0.4rem', alignItems:'center' }}>
+                  <span className={`badge ${STATUS_BADGE[project.status] || 'badge-gray'}`}>
+                    {project.status}
+                  </span>
+                  {project.language && (
+                    <span style={{ fontSize:'0.72rem' }}>
+                      {project.language === 'fr' ? '🇫🇷' : '🇬🇧'}
+                    </span>
+                  )}
+                </div>
                 <span className="mono"># {String(project.id).padStart(4, '0')}</span>
               </div>
 
@@ -272,26 +274,17 @@ export default function Dashboard() {
                   {project.checklist_count} checklist{project.checklist_count !== 1 ? 's' : ''}
                 </span>
                 {project.client_name && (
-                  <span style={{ fontSize:'0.77rem', color:'#55555f' }}>
-                    Ref: {project.client_name}
-                  </span>
+                  <span style={{ fontSize:'0.77rem', color:'#55555f' }}>Ref: {project.client_name}</span>
                 )}
               </div>
 
-              <div style={{
-                marginTop:'0.75rem', borderTop:'1px solid #2e2e33',
-                paddingTop:'0.75rem', display:'flex', gap:'0.5rem',
-              }}>
-                <button
-                  className="btn btn-ghost btn-sm"
-                  onClick={e => { e.stopPropagation(); navigate(`/projects/${project.id}/history`) }}
-                >
+              <div style={{ marginTop:'0.75rem', borderTop:'1px solid #2e2e33', paddingTop:'0.75rem', display:'flex', gap:'0.5rem' }}>
+                <button className="btn btn-ghost btn-sm"
+                  onClick={e => { e.stopPropagation(); navigate(`/projects/${project.id}/history`) }}>
                   History
                 </button>
-                <button
-                  className="btn btn-ghost btn-sm"
-                  onClick={e => { e.stopPropagation(); openProject(project) }}
-                >
+                <button className="btn btn-ghost btn-sm"
+                  onClick={e => { e.stopPropagation(); openProject(project) }}>
                   Open →
                 </button>
               </div>

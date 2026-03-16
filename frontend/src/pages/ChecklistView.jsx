@@ -34,6 +34,7 @@ export default function ChecklistView() {
   const [tasks, setTasks]         = useState([])
   const [loading, setLoading]     = useState(true)
   const [error, setError]         = useState('')
+  const [projectLanguage, setProjectLanguage] = useState('en')
 
   const [selected, setSelected]   = useState(new Set())
   const [showEmail, setShowEmail] = useState(false)
@@ -64,8 +65,13 @@ export default function ChecklistView() {
       ])
       setChecklist(clRes.data)
       setTasks(tRes.data)
+      // Charger la langue du projet pour le EmailModal
+      try {
+        const pRes = await api.get(`/projects/${projectId}`)
+        setProjectLanguage(pRes.data.language || 'en')
+      } catch { /* langue par défaut */ }
     } catch (err) {
-      setError(err.message)
+      setError('Failed to load checklist: ' + err.message)
     } finally {
       setLoading(false)
     }
@@ -111,12 +117,28 @@ export default function ChecklistView() {
   }
 
   async function validateAiDraft() {
-    if (!aiTitle.trim()) { alert('Please give this checklist a title'); return }
+    if (aiDraft.length === 0) { setAiError('No tasks to add.'); return }
+    setAiExtracting(true)
+    setAiError('')
     try {
-      const res = await api.post(`/projects/${projectId}/checklists/ai-validate`, { title: aiTitle, tasks: aiDraft })
-      setShowAI(false); setAiDraft(null)
-      navigate(`/projects/${projectId}/checklists/${res.data.id}`)
-    } catch (err) { setAiError(err.message) }
+      // Ajout dans la checklist COURANTE — pas de nouvelle checklist créée
+      for (const task of aiDraft) {
+        await api.post(`/checklists/${checklistId}/tasks`, {
+          title:       task.title,
+          description: task.description || null,
+          task_type:   task.task_type   || 'document',
+          priority:    task.priority    || 5,
+        })
+      }
+      setShowAI(false)
+      setAiDraft(null)
+      setAiTitle('')
+      loadAll()
+    } catch (err) {
+      setAiError('Failed to save tasks: ' + err.message)
+    } finally {
+      setAiExtracting(false)
+    }
   }
 
   // Statistiques
@@ -309,10 +331,6 @@ export default function ChecklistView() {
                 <div className="alert alert-warn" style={{ marginBottom:'1rem', fontSize:'0.82rem' }}>
                   ⚠️ Review the AI-generated tasks. Remove any that don't apply, then validate to save.
                 </div>
-                <div className="form-group">
-                  <label>Checklist title</label>
-                  <input value={aiTitle} onChange={e => setAiTitle(e.target.value)} />
-                </div>
                 <div style={{ maxHeight:320, overflowY:'auto', marginBottom:'1rem' }}>
                   {aiDraft.map((t, i) => (
                     <div key={i} style={{ display:'flex', alignItems:'center', gap:'0.75rem', padding:'0.5rem 0', borderBottom:'1px solid #2e2e33' }}>
@@ -328,8 +346,8 @@ export default function ChecklistView() {
                 {aiError && <div className="alert alert-error">{aiError}</div>}
                 <div className="modal-footer">
                   <button className="btn btn-ghost" onClick={() => setAiDraft(null)}>← Re-upload</button>
-                  <button className="btn btn-primary" onClick={validateAiDraft}>
-                    ✓ Save ({aiDraft.length} tasks)
+                  <button className="btn btn-primary" onClick={validateAiDraft} disabled={aiExtracting}>
+                    {aiExtracting ? <><span className="spinner" /> Saving…</> : `✓ Add ${aiDraft.length} tasks to this checklist`}
                   </button>
                 </div>
               </>
@@ -344,6 +362,7 @@ export default function ChecklistView() {
           projectId={projectId}
           selectedTasks={selectedTaskObjs}
           consultantName={user?.name}
+          projectLanguage={projectLanguage}
           onClose={() => setShowEmail(false)}
           onSent={() => { setSelected(new Set()); loadAll() }}
         />

@@ -33,7 +33,7 @@ async function generateDraft(req, res) {
     const aiResponse = await axios.post(
       `${process.env.AI_SERVICE_URL}/generate-email`,
       { tasks, recipient_name: recipient_name || 'Client', project_id: req.params.projectId },
-      { timeout: 30000 }
+      { timeout: 150000 }
     );
 
     const { subject, body } = aiResponse.data;

@@ -13,7 +13,8 @@ async function listByProject(req, res) {
         (SELECT COUNT(*) FROM tasks t WHERE t.checklist_id = c.id AND t.status IN ('received','validated')) AS completed_tasks,
         (SELECT COUNT(*) FROM tasks t WHERE t.checklist_id = c.id AND t.task_type='document' AND t.status IN ('received','validated')) AS received_docs,
         (SELECT COUNT(*) FROM tasks t WHERE t.checklist_id = c.id AND t.task_type='access' AND t.status IN ('received','validated')) AS granted_rights
-       FROM checklists c WHERE c.project_id = ?`,
+       FROM checklists c WHERE c.project_id = ?
+       ORDER BY c.created_at ASC`,
       [req.params.projectId]
     );
     return res.json(rows);
