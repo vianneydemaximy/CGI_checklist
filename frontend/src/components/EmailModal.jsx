@@ -177,8 +177,8 @@ export default function EmailModal({ projectId, selectedTasks, onClose, onSent, 
             <div key={i} style={{
               flex:1, textAlign:'center', fontSize:'0.75rem', padding:'0.35rem',
               borderRadius:4, fontFamily:"'Space Mono',monospace",
-              background: step === i+1 ? '#e8652a' : step > i+1 ? '#064e35' : '#222',
-              color:      step === i+1 ? '#fff'    : step > i+1 ? '#34d399' : '#55555f',
+              background: step === i+1 ? 'var(--accent)' : step > i+1 ? '#16a34a' : 'var(--bg-hover)',
+              color:      step === i+1 ? '#fff'    : step > i+1 ? '#34d399' : 'var(--text-dim)',
             }}>
               {step > i+1 ? '✓ ' : `${i+1}. `}{label}
             </div>
@@ -192,12 +192,12 @@ export default function EmailModal({ projectId, selectedTasks, onClose, onSent, 
           <>
             {/* Récap tâches */}
             <div style={{ marginBottom:'1rem' }}>
-              <div style={{ fontSize:'0.73rem', color:'#55555f', fontFamily:"'Space Mono',monospace", marginBottom:'0.4rem' }}>
+              <div style={{ fontSize:'0.73rem', color:'var(--text-dim)', fontFamily:"'Space Mono',monospace", marginBottom:'0.4rem' }}>
                 {language === 'fr' ? 'TÂCHES SÉLECTIONNÉES' : 'SELECTED TASKS'}
               </div>
               <div style={{ maxHeight:100, overflowY:'auto' }}>
                 {selectedTasks.map(t => (
-                  <div key={t.id} style={{ fontSize:'0.83rem', color:'#e8e8ea', padding:'0.2rem 0', borderBottom:'1px solid #2e2e33' }}>
+                  <div key={t.id} style={{ fontSize:'0.83rem', color:'fontVariant(--text)', padding:'0.2rem 0', borderBottom:'1px solid var(--border)' }}>
                     <span style={{ fontSize:'0.72rem', color:'#8888a0', marginRight:'0.5rem', fontFamily:"'Space Mono',monospace" }}>
                       [{t.task_type}]
                     </span>{t.title}
@@ -237,9 +237,9 @@ export default function EmailModal({ projectId, selectedTasks, onClose, onSent, 
                 ].map(m => (
                   <button key={m.id} type="button" onClick={() => setGenMode(m.id)} style={{
                     flex:1, padding:'0.6rem 0.5rem', borderRadius:6, cursor:'pointer',
-                    border:      genMode === m.id ? '1px solid #e8652a' : '1px solid #2e2e33',
-                    background:  genMode === m.id ? 'rgba(232,101,42,0.1)' : '#18181b',
-                    color:       genMode === m.id ? '#e8652a' : '#8888a0',
+                    border: genMode === m.id ? '1px solid var(--accent)' : '1px solid var(--border)',
+                    background: genMode === m.id ? 'var(--accent-soft)' : 'var(--bg-card)',
+                    color: genMode === m.id ? 'var(--accent)' : 'var(--text-dim)',
                     fontSize:'0.82rem', textAlign:'center',
                   }}>
                     <div style={{ fontWeight:500 }}>{m.label}</div>
@@ -305,7 +305,7 @@ export default function EmailModal({ projectId, selectedTasks, onClose, onSent, 
             <div className="form-group">
               <label>
                 {language === 'fr' ? 'Corps du message' : 'Email body'}
-                <span style={{ fontSize:'0.72rem', color:'#55555f', marginLeft:'0.5rem', fontFamily:"'Space Mono',monospace" }}>
+                <span style={{ fontSize:'0.72rem', color:'var(--text-dim)', marginLeft:'0.5rem', fontFamily:"'Space Mono',monospace" }}>
                   {language === 'fr' ? 'modifiable' : 'editable'}
                 </span>
               </label>

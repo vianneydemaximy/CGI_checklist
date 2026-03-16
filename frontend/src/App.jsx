@@ -10,6 +10,7 @@ import ChecklistView from './pages/ChecklistView'
 import History       from './pages/History'
 import Templates     from './pages/Templates'
 import Navbar        from './components/Navbar'
+import Footer from './components/Footer'
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth()
@@ -26,7 +27,10 @@ function AppShell({ children }) {
   return (
     <div className="layout">
       <Navbar />
-      <div className="main-content">{children}</div>
+      <div className="main-content" style={{marginLeft:220}}>{children}
+        <Footer />
+        </div>
+      
     </div>
   )
 }

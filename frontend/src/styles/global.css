@@ -6,34 +6,51 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
-  --bg:        #0f0f10;
-  --bg-card:   #18181b;
-  --bg-hover:  #222226;
-  --border:    #2e2e33;
-  --border-light: #3a3a40;
 
-  --text:      #e8e8ea;
-  --text-dim:  #8888a0;
-  --text-faint:#55555f;
+  /* Backgrounds */
 
-  --accent:    #e8652a;       /* CGI-orange */
+  --bg:        #f6f7f9;
+  --bg-card:   #ffffff;
+  --bg-hover:  #f1f3f6;
+
+  --border:    #e5e7eb;
+  --border-light: #d6d9df;
+
+  /* Text */
+
+  --text:      #1f2933;
+  --text-dim:  #6b7280;
+  --text-faint:#9aa1ac;
+
+  /* Accent */
+
+  --accent:    #d6062b;
   --accent-dim:#8c3d19;
-  --accent-glow: rgba(232,101,42,0.15);
+  --accent-glow: rgba(214,6,43,0.12);
+  --accent-soft: rgba(214,6,43,0.08);
 
-  --green:     #34d399;
-  --green-dim: #064e35;
-  --yellow:    #fbbf24;
-  --yellow-dim:#78350f;
-  --red:       #f87171;
-  --red-dim:   #7f1d1d;
-  --blue:      #60a5fa;
-  --blue-dim:  #1e3a5f;
+  /* Status */
+
+  --green:     #059669;
+  --green-dim: #ecfdf5;
+
+  --yellow:    #d97706;
+  --yellow-dim:#fffbeb;
+
+  --red:       #dc2626;
+  --red-dim:   #fef2f2;
+
+  --blue:      #2563eb;
+  --blue-dim:  #eff6ff;
 
   --radius:    6px;
   --radius-lg: 12px;
+
   --font:      'DM Sans', sans-serif;
   --font-mono: 'Space Mono', monospace;
-  --shadow:    0 4px 24px rgba(0,0,0,0.4);
+
+  --shadow:    0 6px 24px rgba(0,0,0,0.06);
+
   --transition: 0.15s ease;
 }
 
@@ -44,6 +61,7 @@ body {
   color: var(--text);
   line-height: 1.6;
   min-height: 100vh;
+  background: linear-gradient(#f7f8fa, #f3f4f6);
 }
 
 /* ── Typography ─────────────────────────────────────────────── */
@@ -62,6 +80,7 @@ p  { color: var(--text-dim); }
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   padding: 1.5rem;
+  box-shadow: var(--shadow);
 }
 .card:hover { border-color: var(--border-light); }
 
@@ -88,7 +107,7 @@ p  { color: var(--text-dim); }
   border: 1px solid var(--border-light);
   color: var(--text-dim);
 }
-.btn-ghost:hover:not(:disabled) { background: var(--bg-hover); color: var(--text); }
+.btn-ghost:hover:not(:disabled) { background: var(--bg-hover); color: var(--accent); }
 
 .btn-danger {
   background: var(--red-dim);
@@ -104,7 +123,7 @@ p  { color: var(--text-dim); }
 /* ── Form inputs ─────────────────────────────────────────────── */
 input, textarea, select {
   width: 100%; padding: 0.6rem 0.8rem;
-  background: var(--bg); border: 1px solid var(--border-light);
+  background: #ffffff; border: 1px solid var(--border-light);
   border-radius: var(--radius); color: var(--text);
   font-family: var(--font); font-size: 0.9rem;
   transition: var(--transition);
@@ -128,7 +147,7 @@ label { display: block; margin-bottom: 0.35rem; font-size: 0.82rem; color: var(-
 .badge-yellow { background: var(--yellow-dim); color: var(--yellow); }
 .badge-red    { background: var(--red-dim);    color: var(--red); }
 .badge-blue   { background: var(--blue-dim);   color: var(--blue); }
-.badge-gray   { background: #222; color: var(--text-dim); }
+.badge-gray   { background: #ffffff; color: var(--text-dim); }
 
 /* ── Progress bar ───────────────────────────────────────────── */
 .progress-bar {
@@ -160,7 +179,7 @@ input[type="checkbox"] {
 
 /* ── Modal ──────────────────────────────────────────────────── */
 .modal-overlay {
-  position: fixed; inset: 0; background: rgba(0,0,0,0.7);
+  position: fixed; inset: 0; background: rgba(0,0,0,0.35);
   display: flex; align-items: center; justify-content: center;
   z-index: 1000; padding: 1rem;
   animation: fadeIn 0.15s ease;

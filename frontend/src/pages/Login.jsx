@@ -22,6 +22,7 @@ function EyeIcon({ open }) {
   )
 }
 
+
 export default function Login() {
   const { login }   = useAuth()
   const navigate    = useNavigate()
@@ -50,24 +51,27 @@ export default function Login() {
     <div style={{
       minHeight: '100vh', display: 'flex',
       alignItems: 'center', justifyContent: 'center',
-      background: '#0f0f10', padding: '1rem',
+      background: '#ffffff', padding: '1rem',
     }}>
       {/* Grille décorative */}
       <div style={{
         position: 'fixed', inset: 0, opacity: 0.03, pointerEvents: 'none',
-        backgroundImage: 'linear-gradient(#e8652a 1px, transparent 1px), linear-gradient(90deg, #e8652a 1px, transparent 1px)',
+        backgroundImage: 'linear-gradient(#d6062b 1px, transparent 1px), linear-gradient(90deg, #d6062b 1px, transparent 1px)',
         backgroundSize: '40px 40px',
       }} />
 
       <div style={{ width: '100%', maxWidth: 420, position: 'relative' }}>
         {/* Brand */}
         <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
-          <div style={{
-            display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-            width: 56, height: 56, background: '#e8652a',
-            borderRadius: 14, fontSize: '1.8rem', marginBottom: '1rem',
-          }}>⬡</div>
-          <h1 style={{ fontSize: '1.5rem', color: '#e8e8ea', marginBottom: '0.25rem' }}>
+          <img
+            src="../assets/cgi-logo.png"
+            alt="CGI"
+            style={{
+              height: 80,
+              marginBottom: '1rem'
+            }}
+          />
+          <h1 style={{ fontSize: '1.5rem', color: 'var(--text)', marginBottom: '0.25rem' }}>
             Document Orchestrator
           </h1>
           <p style={{ fontSize: '0.8rem', color: '#8888a0', fontFamily: "'Space Mono', monospace" }}>

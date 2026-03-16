@@ -49,8 +49,8 @@ function ReplaceModal({ doc, onClose, onDone }) {
           <button className="btn-icon" onClick={onClose}>✕</button>
         </div>
 
-        <p style={{ fontSize:'0.85rem', color:'#8888a0', marginBottom:'1rem' }}>
-          Replacing: <strong style={{ color:'#e8e8ea' }}>{doc.filename}</strong> (v{doc.version_number})
+        <p style={{ fontSize:'0.85rem', color:'var(--text-dim)', marginBottom:'1rem' }}>
+          Replacing: <strong style={{ color:'var(--text-dim)' }}>{doc.filename}</strong> (v{doc.version_number})
         </p>
 
         {error && <div className="alert alert-error">{error}</div>}
@@ -59,7 +59,7 @@ function ReplaceModal({ doc, onClose, onDone }) {
         <div className="form-group">
           <label>New file *</label>
           <input type="file" onChange={e => setFile(e.target.files[0])}
-            style={{ padding:'0.4rem', background:'transparent', border:'1px solid #2e2e33', borderRadius:6, color:'#e8e8ea', width:'100%' }} />
+            style={{ padding:'0.4rem', background:'transparent', border:'1px solid #2e2e33', borderRadius:6, color:'var(--text-dim)', width:'100%' }} />
         </div>
 
         {/* Choix de l'action */}
@@ -67,24 +67,24 @@ function ReplaceModal({ doc, onClose, onDone }) {
           <label>What to do with the original?</label>
           <div style={{ display:'flex', flexDirection:'column', gap:'0.75rem', marginTop:'0.25rem' }}>
             <label style={{ display:'flex', alignItems:'flex-start', gap:'0.75rem', cursor:'pointer',
-              padding:'0.75rem', border:`1px solid ${action === 'version' ? '#e8652a' : '#2e2e33'}`,
-              borderRadius:6, background: action === 'version' ? 'rgba(232,101,42,0.08)' : '#18181b' }}>
+              padding:'0.75rem', border:`1px solid ${action === 'version' ? 'var(--accent)' : 'var(--border)'}`,
+              borderRadius:6, background: action === 'version' ? 'var(--accent-soft)' : 'var(--bg-hover)' }}>
               <input type="radio" name="action" value="version"
                 checked={action === 'version'} onChange={() => setAction('version')}
                 style={{ width:'auto', marginTop:2 }} />
               <div>
-                <div style={{ fontWeight:500, color:'#e8e8ea', fontSize:'0.88rem' }}>
+                <div style={{ fontWeight:500, color:'var(--text-dim)', fontSize:'0.88rem' }}>
                   📚 Keep as previous version
                 </div>
-                <div style={{ fontSize:'0.78rem', color:'#8888a0', marginTop:2 }}>
+                <div style={{ fontSize:'0.78rem', color:'var(--text-dim)', marginTop:2 }}>
                   The original is archived and visible in version history. Nothing is deleted.
                 </div>
               </div>
             </label>
 
             <label style={{ display:'flex', alignItems:'flex-start', gap:'0.75rem', cursor:'pointer',
-              padding:'0.75rem', border:`1px solid ${action === 'delete_original' ? '#f87171' : '#2e2e33'}`,
-              borderRadius:6, background: action === 'delete_original' ? 'rgba(248,113,113,0.06)' : '#18181b' }}>
+              padding:'0.75rem', border:`1px solid ${action === 'delete_original' ? '#f87171' : 'var(--bg)'}`,
+              borderRadius:6, background: action === 'delete_original' ? 'rgba(248,113,113,0.06)' : 'var(--bg)' }}>
               <input type="radio" name="action" value="delete_original"
                 checked={action === 'delete_original'} onChange={() => setAction('delete_original')}
                 style={{ width:'auto', marginTop:2 }} />
@@ -92,7 +92,7 @@ function ReplaceModal({ doc, onClose, onDone }) {
                 <div style={{ fontWeight:500, color:'#f87171', fontSize:'0.88rem' }}>
                   🗑️ Delete original
                 </div>
-                <div style={{ fontSize:'0.78rem', color:'#8888a0', marginTop:2 }}>
+                <div style={{ fontSize:'0.78rem', color:'var(--text-dim)', marginTop:2 }}>
                   The original file is permanently deleted. This cannot be undone.
                 </div>
               </div>
@@ -207,8 +207,8 @@ export default function TaskItem({ task, onRefresh, onSelectToggle, selected }) 
   return (
     <>
       <div style={{
-        background: '#18181b',
-        border: '1px solid #2e2e33',
+        background: 'var(--bg-card)',
+        border: '1px solid var(--border)',
         borderLeft: `3px solid ${TYPE_COLORS[task.task_type] || '#555'}`,
         borderRadius: 8, marginBottom: '0.5rem',
       }}>
@@ -244,9 +244,9 @@ export default function TaskItem({ task, onRefresh, onSelectToggle, selected }) 
             /* Vue lecture */
             <>
               <div style={{ flex:1 }}>
-                <div style={{ fontWeight:500, fontSize:'0.9rem', color:'#e8e8ea' }}>{task.title}</div>
+                <div style={{ fontWeight:500, fontSize:'0.9rem', color:'var(--text)' }}>{task.title}</div>
                 {task.assigned_to_email && (
-                  <div style={{ fontSize:'0.75rem', color:'#8888a0', fontFamily:"'Space Mono',monospace", marginTop:2 }}>
+                  <div style={{ fontSize:'0.75rem', color:'var(--text-dim)', fontFamily:"'Space Mono',monospace", marginTop:2 }}>
                     → {task.assigned_to_email}
                   </div>
                 )}
@@ -279,18 +279,18 @@ export default function TaskItem({ task, onRefresh, onSelectToggle, selected }) 
 
             {/* Contrôles de statut */}
             <div style={{ display:'flex', gap:'0.5rem', flexWrap:'wrap', marginBottom:'1rem', alignItems:'center' }}>
-              <span style={{ fontSize:'0.77rem', color:'#8888a0' }}>Mark as:</span>
+              <span style={{ fontSize:'0.77rem', color:'var(--text-dim)' }}>Mark as:</span>
               {['pending','requested','received','validated'].map(s => (
                 <button key={s} className="btn btn-ghost btn-sm"
-                  style={{ color: task.status === s ? '#e8652a' : '' }}
+                  style={{ color: task.status === s ? '#d6062b' : '' }}
                   onClick={() => changeStatus(s)}>{s}</button>
               ))}
             </div>
 
             {/* ── Section documents ── */}
-            <div style={{ borderTop:'1px solid #2e2e33', paddingTop:'0.75rem' }}>
+            <div style={{ borderTop:'1px solid var(--border)', paddingTop:'0.75rem' }}>
               <div className="flex-between" style={{ marginBottom:'0.5rem' }}>
-                <span style={{ fontSize:'0.73rem', color:'#55555f', fontFamily:"'Space Mono',monospace" }}>
+                <span style={{ fontSize:'0.73rem', color:'var(--text-dim)', fontFamily:"'Space Mono',monospace" }}>
                   DOCUMENTS
                 </span>
                 <div style={{ display:'flex', gap:'0.5rem' }}>
@@ -314,25 +314,25 @@ export default function TaskItem({ task, onRefresh, onSelectToggle, selected }) 
                 </div>
               )}
 
-              {loadingDocs && <p style={{ fontSize:'0.8rem', color:'#8888a0' }}>Loading…</p>}
+              {loadingDocs && <p style={{ fontSize:'0.8rem', color:'var(--text-dim)' }}>Loading…</p>}
 
               {/* Document courant */}
               {currentDocs.length === 0 && !loadingDocs && (
-                <p style={{ fontSize:'0.8rem', color:'#55555f' }}>No file uploaded yet.</p>
+                <p style={{ fontSize:'0.8rem', color:'var(--text-dim)' }}>No file uploaded yet.</p>
               )}
 
               {currentDocs.map(doc => (
                 <div key={doc.id} style={{
                   display:'flex', justifyContent:'space-between', alignItems:'center',
-                  padding:'0.6rem 0.75rem', background:'#111113', borderRadius:6, marginBottom:'0.25rem',
-                  border:'1px solid #2e2e33',
+                  padding:'0.6rem 0.75rem', background:'var(--bg-hover)', borderRadius:6, marginBottom:'0.25rem',
+                  border:'1px solid var(--border)',
                 }}>
                   <div>
-                    <span style={{ fontSize:'0.85rem', color:'#e8e8ea' }}>📄 {doc.filename}</span>
+                    <span style={{ fontSize:'0.85rem', color:'var(--text-dim)' }}>📄 {doc.filename}</span>
                     <span style={{ fontSize:'0.72rem', color:'#34d399', fontFamily:"'Space Mono',monospace", marginLeft:'0.6rem' }}>
                       v{doc.version_number} (current)
                     </span>
-                    <div style={{ fontSize:'0.72rem', color:'#55555f', marginTop:2 }}>
+                    <div style={{ fontSize:'0.72rem', color:'var(--text-dim)', marginTop:2 }}>
                       {doc.uploader_name} · {new Date(doc.created_at).toLocaleDateString()}
                     </div>
                   </div>
@@ -350,7 +350,7 @@ export default function TaskItem({ task, onRefresh, onSelectToggle, selected }) 
               {/* Historique des versions */}
               {showHistory && historyDocs.length > 0 && (
                 <div style={{ marginTop:'0.5rem' }}>
-                  <div style={{ fontSize:'0.72rem', color:'#55555f', fontFamily:"'Space Mono',monospace", marginBottom:'0.3rem' }}>
+                  <div style={{ fontSize:'0.72rem', color:'var(--text-dim)', fontFamily:"'Space Mono',monospace", marginBottom:'0.3rem' }}>
                     PREVIOUS VERSIONS
                   </div>
                   {historyDocs.map(doc => (
@@ -360,8 +360,8 @@ export default function TaskItem({ task, onRefresh, onSelectToggle, selected }) 
                       border:'1px solid #2e2e33', opacity:0.7,
                     }}>
                       <div>
-                        <span style={{ fontSize:'0.83rem', color:'#8888a0' }}>📄 {doc.filename}</span>
-                        <span style={{ fontSize:'0.72rem', color:'#55555f', fontFamily:"'Space Mono',monospace", marginLeft:'0.5rem' }}>
+                        <span style={{ fontSize:'0.83rem', color:'var(--text-dim)' }}>📄 {doc.filename}</span>
+                        <span style={{ fontSize:'0.72rem', color:'var(--text-dim)', fontFamily:"'Space Mono',monospace", marginLeft:'0.5rem' }}>
                           v{doc.version_number}
                         </span>
                         <div style={{ fontSize:'0.72rem', color:'#3a3a40' }}>

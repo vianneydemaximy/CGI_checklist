@@ -67,7 +67,7 @@ export default function History() {
   return (
     <div>
       <div style={{ marginBottom:'1.5rem' }}>
-        <div style={{ fontSize:'0.8rem', color:'#55555f', marginBottom:'0.5rem', fontFamily:"'Space Mono',monospace" }}>
+        <div style={{ fontSize:'0.8rem', color:'var(--text-dim)', marginBottom:'0.5rem', fontFamily:"'Space Mono',monospace" }}>
           <Link to="/" style={{ color:'#8888a0', textDecoration:'none' }}>Dashboard</Link> / Audit History
         </div>
         <h1>Project History</h1>
@@ -92,40 +92,40 @@ export default function History() {
               <div style={{ display:'flex', flexDirection:'column', alignItems:'center', width:36, flexShrink:0 }}>
                 <div style={{
                   width:36, height:36, borderRadius:'50%',
-                  background:'#222', border:'1px solid #2e2e33',
+                  background:'var(--bg)', border:'1px solid var(--border-light)',
                   display:'flex', alignItems:'center', justifyContent:'center',
                   fontSize:'1rem', flexShrink:0,
                 }}>
                   {ACTION_ICON[log.action] || '📌'}
                 </div>
                 {i < logs.length - 1 && (
-                  <div style={{ flex:1, width:1, background:'#2e2e33', minHeight:12 }} />
+                  <div style={{ flex:1, width:1, background:'var(--bg)', minHeight:12 }} />
                 )}
               </div>
 
               {/* Contenu */}
               <div style={{
-                flex:1, background:'#18181b', border:'1px solid #2e2e33',
+                flex:1, background:'var(--bg)', border:'1px solid var(--border-light)',
                 borderRadius:8, padding:'0.75rem 1rem', marginBottom:4,
               }}>
                 <div style={{ display:'flex', justifyContent:'space-between', alignItems:'flex-start', gap:'1rem' }}>
                   <div>
-                    <span style={{ fontFamily:"'Space Mono',monospace", fontSize:'0.78rem', color:'#e8652a' }}>
+                    <span style={{ fontFamily:"'Space Mono',monospace", fontSize:'0.78rem', color:'#d6062b' }}>
                       {log.action}
                     </span>
                     {log.user_name && (
-                      <span style={{ fontSize:'0.78rem', color:'#8888a0', marginLeft:'0.5rem' }}>
+                      <span style={{ fontSize:'0.78rem', color:'var(--text)', marginLeft:'0.5rem' }}>
                         by {log.user_name}
                       </span>
                     )}
                   </div>
-                  <span style={{ fontSize:'0.72rem', color:'#55555f', whiteSpace:'nowrap', fontFamily:"'Space Mono',monospace" }}>
+                  <span style={{ fontSize:'0.72rem', color:'var(--text-dim)', whiteSpace:'nowrap', fontFamily:"'Space Mono',monospace" }}>
                     {timeAgo(log.created_at)}
                   </span>
                 </div>
 
                 {Object.keys(details).length > 0 && (
-                  <div style={{ marginTop:'0.4rem', fontSize:'0.78rem', color:'#55555f', fontFamily:"'Space Mono',monospace" }}>
+                  <div style={{ marginTop:'0.4rem', fontSize:'0.78rem', color:'var(--text-dim)', fontFamily:"'Space Mono',monospace" }}>
                     {Object.entries(details).map(([k, v]) => (
                       <span key={k} style={{ marginRight:'1rem' }}>
                         {k}: <span style={{ color:'#8888a0' }}>{String(v)}</span>

@@ -139,7 +139,11 @@ function ChecklistTemplates({ isAdmin, userId }) {
                 </div>
                 <span className="mono">{tpl.item_count || 0} items</span>
               </div>
-              <h3 style={{ color:'#e8e8ea', marginBottom:'0.3rem' }}>{tpl.name}</h3>
+              <h3 style={{
+                color: 'var(--text)',
+                marginBottom:'0.3rem',
+                fontWeight:500
+              }}>{tpl.name}</h3>
               {tpl.description && <p style={{ fontSize:'0.82rem', marginBottom:'0.75rem' }}>{tpl.description}</p>}
               <div style={{ display:'flex', gap:'0.5rem', marginTop:'0.75rem', borderTop:'1px solid #2e2e33', paddingTop:'0.75rem' }}>
                 <button className="btn btn-ghost btn-sm" onClick={() => openPreview(tpl)}>Preview</button>
@@ -167,17 +171,17 @@ function ChecklistTemplates({ isAdmin, userId }) {
               <button className="btn-icon" onClick={() => setPreview(null)}>✕</button>
             </div>
             {preview.description && <p style={{ marginBottom:'1rem', fontSize:'0.88rem' }}>{preview.description}</p>}
-            <div style={{ fontSize:'0.75rem', color:'#55555f', fontFamily:"'Space Mono',monospace", marginBottom:'0.5rem' }}>
+            <div style={{ fontSize:'0.75rem', color:'var(--text-dim)', fontFamily:"'Space Mono',monospace", marginBottom:'0.5rem' }}>
               {preview.items?.length || 0} TASKS
             </div>
             {(preview.items || []).map((item, i) => (
               <div key={i} style={{ display:'flex', gap:'0.75rem', padding:'0.5rem 0', borderBottom:'1px solid #2e2e33', alignItems:'center' }}>
                 <span style={{ width:6, height:6, borderRadius:'50%', background: TYPE_COLORS[item.task_type] || '#555', flexShrink:0 }} />
                 <div style={{ flex:1 }}>
-                  <div style={{ fontSize:'0.87rem', color:'#e8e8ea' }}>{item.title}</div>
+                  <div style={{ fontSize:'0.87rem', color:'#1f2933' }}>{item.title}</div>
                   {item.description && <div style={{ fontSize:'0.75rem', color:'#8888a0' }}>{item.description}</div>}
                 </div>
-                <span style={{ fontSize:'0.7rem', color:'#55555f', fontFamily:"'Space Mono',monospace" }}>
+                <span style={{ fontSize:'0.7rem', color:'var(--text-dim)', fontFamily:"'Space Mono',monospace" }}>
                   p{item.priority}
                 </span>
               </div>
@@ -214,9 +218,9 @@ function ChecklistTemplates({ isAdmin, userId }) {
                 {[['en','🇬🇧 English'],['fr','🇫🇷 Français']].map(([k,v]) => (
                   <button key={k} type="button" onClick={() => setForm(f => ({ ...f, language: k }))} style={{
                     flex:1, padding:'0.5rem', borderRadius:6, cursor:'pointer',
-                    border:     form.language === k ? '1px solid #e8652a' : '1px solid #2e2e33',
-                    background: form.language === k ? 'rgba(232,101,42,0.1)' : '#18181b',
-                    color:      form.language === k ? '#e8652a' : '#8888a0',
+                    border:     form.language === k ? '1px solid #d6062b' : '1px solid #E2E4EA',
+                    background: form.language === k ? 'rgba(214,6,43,0.07)' : '#fff',
+                    color:      form.language === k ? '#d6062b' : '#6B7280',
                     fontSize:'0.82rem',
                   }}>{v}</button>
                 ))}
@@ -234,7 +238,7 @@ function ChecklistTemplates({ isAdmin, userId }) {
             {/* Items */}
             <div style={{ marginTop:'1rem' }}>
               <div className="flex-between" style={{ marginBottom:'0.5rem' }}>
-                <span style={{ fontSize:'0.78rem', color:'#55555f', fontFamily:"'Space Mono',monospace" }}>
+                <span style={{ fontSize:'0.78rem', color:'var(--text-dim)', fontFamily:"'Space Mono',monospace" }}>
                   TASKS ({form.items.length})
                 </span>
                 <button className="btn btn-ghost btn-sm" onClick={addItem}>+ Add task</button>
@@ -242,12 +246,12 @@ function ChecklistTemplates({ isAdmin, userId }) {
 
               <div style={{ maxHeight:320, overflowY:'auto' }}>
                 {form.items.length === 0 && (
-                  <p style={{ color:'#55555f', fontSize:'0.83rem', padding:'0.5rem 0' }}>
+                  <p style={{ color:'var(--text-dim)', fontSize:'0.83rem', padding:'0.5rem 0' }}>
                     No tasks yet. Click "+ Add task" to start.
                   </p>
                 )}
                 {form.items.map((item, i) => (
-                  <div key={i} style={{ background:'#111113', border:'1px solid #2e2e33', borderRadius:6, padding:'0.75rem', marginBottom:'0.5rem' }}>
+                  <div key={i} style={{ background:'#f6f7f9', border:'1px solid #2e2e33', borderRadius:6, padding:'0.75rem', marginBottom:'0.5rem' }}>
                     <div style={{ display:'grid', gridTemplateColumns:'1fr auto', gap:'0.5rem', marginBottom:'0.5rem' }}>
                       <input
                         value={item.title}
@@ -314,7 +318,7 @@ function EmailTemplates({ isAdmin, userId }) {
   }
 
   function openEdit(tpl) {
-    setForm({ name: tpl.name, description: tpl.description || '', subject: tpl.subject, body: tpl.body, is_global: !!tpl.is_global })
+    setForm({ name: tpl.name, description: tpl.description || '', subject: tpl.subject, body: tpl.body, is_global: !!tpl.is_global, language: tpl.language || 'en' })
     setEditing(tpl.id)
     setShowModal(true)
   }
@@ -354,7 +358,7 @@ function EmailTemplates({ isAdmin, userId }) {
           <p style={{ fontSize:'0.88rem' }}>
             Reusable email formulations. Always editable before sending.
           </p>
-          <p style={{ fontSize:'0.78rem', color:'#55555f', marginTop:4, fontFamily:"'Space Mono',monospace" }}>
+          <p style={{ fontSize:'0.78rem', color:'var(--text-dim)', marginTop:4, fontFamily:"'Space Mono',monospace" }}>
             Placeholders: {PLACEHOLDERS}
           </p>
         </div>
@@ -374,11 +378,26 @@ function EmailTemplates({ isAdmin, userId }) {
                   <Badge global={!!tpl.is_global} />
                   <span style={{ fontSize:'0.72rem' }}>{tpl.language === 'fr' ? '🇫🇷' : '🇬🇧'}</span>
                 </div>
-                <span style={{ fontSize:'0.72rem', color:'#55555f' }}>{tpl.created_by_name}</span>
+                <span style={{ fontSize:'0.72rem', color:'var(--text-dim)' }}>{tpl.created_by_name}</span>
               </div>
-              <h3 style={{ color:'#e8e8ea', marginBottom:'0.25rem' }}>{tpl.name}</h3>
-              {tpl.description && <p style={{ fontSize:'0.82rem', marginBottom:'0.5rem' }}>{tpl.description}</p>}
-              <div style={{ fontSize:'0.78rem', color:'#8888a0', padding:'0.4rem 0.6rem', background:'#111113', borderRadius:4, marginBottom:'0.75rem', fontFamily:"'Space Mono',monospace", overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
+              <h3 style={{ color:'var(--text)', marginBottom:'0.25rem' }}>{tpl.name}</h3>
+              {tpl.description && <p style={{
+                fontSize:'0.82rem',
+                marginBottom:'0.5rem',
+                color:'var(--text-dim)'
+              }}>{tpl.description}</p>}
+              <div style={{
+                fontSize:'0.78rem',
+                color:'#a1a1aa',
+                padding:'0.4rem 0.6rem',
+                background:'rgba(255,255,255,0.03)',
+                borderRadius:4,
+                marginBottom:'0.75rem',
+                fontFamily:"'Space Mono',monospace",
+                overflow:'hidden',
+                textOverflow:'ellipsis',
+                whiteSpace:'nowrap'
+              }}>
                 {tpl.subject}
               </div>
               <div style={{ display:'flex', gap:'0.5rem', borderTop:'1px solid #2e2e33', paddingTop:'0.75rem' }}>
@@ -407,12 +426,12 @@ function EmailTemplates({ isAdmin, userId }) {
               <button className="btn-icon" onClick={() => setPreview(null)}>✕</button>
             </div>
             <div style={{ marginBottom:'0.75rem' }}>
-              <div style={{ fontSize:'0.73rem', color:'#55555f', fontFamily:"'Space Mono',monospace", marginBottom:'0.25rem' }}>SUBJECT</div>
-              <div style={{ background:'#111113', padding:'0.6rem 0.8rem', borderRadius:6, fontSize:'0.88rem', color:'#e8e8ea' }}>{preview.subject}</div>
+              <div style={{ fontSize:'0.73rem', color:'var(--text-dim)', fontFamily:"'Space Mono',monospace", marginBottom:'0.25rem' }}>SUBJECT</div>
+              <div style={{ background:'#f6f7f9', padding:'0.6rem 0.8rem', borderRadius:6, fontSize:'0.88rem', color:'#1f2933' }}>{preview.subject}</div>
             </div>
             <div>
-              <div style={{ fontSize:'0.73rem', color:'#55555f', fontFamily:"'Space Mono',monospace", marginBottom:'0.25rem' }}>BODY</div>
-              <pre style={{ background:'#111113', padding:'1rem', borderRadius:6, fontSize:'0.83rem', color:'#e8e8ea', whiteSpace:'pre-wrap', fontFamily:'inherit', lineHeight:1.65, maxHeight:400, overflowY:'auto', margin:0 }}>
+              <div style={{ fontSize:'0.73rem', color:'var(--text-dim)', fontFamily:"'Space Mono',monospace", marginBottom:'0.25rem' }}>BODY</div>
+              <pre style={{ background:'#f6f7f9', padding:'1rem', borderRadius:6, fontSize:'0.83rem', color:'#1f2933', whiteSpace:'pre-wrap', fontFamily:'inherit', lineHeight:1.65, maxHeight:400, overflowY:'auto', margin:0 }}>
                 {preview.body}
               </pre>
             </div>
@@ -455,7 +474,7 @@ function EmailTemplates({ isAdmin, userId }) {
               <input value={form.subject} onChange={e => setForm(f => ({ ...f, subject: e.target.value }))} placeholder="[CGI Mission] Document Request" />
             </div>
             <div className="form-group">
-              <label>Body * <span style={{ fontSize:'0.72rem', color:'#55555f' }}>(use placeholders above)</span></label>
+              <label>Body * <span style={{ fontSize:'0.72rem', color:'var(--text-dim)' }}>(use placeholders above)</span></label>
               <textarea
                 rows={12}
                 value={form.body}
@@ -496,9 +515,9 @@ export default function Templates() {
   const tabStyle = (active) => ({
     padding: '0.55rem 1.25rem',
     borderRadius: 6,
-    border: active ? '1px solid #e8652a' : '1px solid transparent',
+    border: active ? '1px solid #d6062b' : '1px solid transparent',
     background: active ? 'rgba(232,101,42,0.1)' : 'transparent',
-    color: active ? '#e8652a' : '#8888a0',
+    color: active ? '#d6062b' : '#8888a0',
     cursor: 'pointer',
     fontSize: '0.88rem',
     fontWeight: active ? 500 : 400,
@@ -512,12 +531,12 @@ export default function Templates() {
         <h1>Templates</h1>
         <p style={{ marginTop:4 }}>
           Manage checklist and email templates.
-          {isAdmin && <span style={{ color:'#e8652a', marginLeft:'0.5rem', fontSize:'0.82rem' }}>Admin — you can create global templates visible to all.</span>}
+          {isAdmin && <span style={{ color:'#d6062b', marginLeft:'0.5rem', fontSize:'0.82rem' }}>Admin — you can create global templates visible to all.</span>}
         </p>
       </div>
 
       {/* Onglets */}
-      <div style={{ display:'flex', gap:'0.5rem', marginBottom:'1.5rem', padding:'0.25rem', background:'#18181b', borderRadius:8, border:'1px solid #2e2e33', width:'fit-content' }}>
+      <div style={{ display:'flex', gap:'0.5rem', marginBottom:'1.5rem', padding:'0.25rem', background:'transparent', borderRadius:8, border:'1px solid #2e2e33', width:'fit-content' }}>
         <button style={tabStyle(tab === 'checklist')} onClick={() => setTab('checklist')}>
           📋 Checklist Templates
         </button>
